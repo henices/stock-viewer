@@ -143,6 +143,9 @@ function getLinkUrl(obj){
 						'<span class="name"><a target="_blank" href="{url}">{name}({code})</a></span>',
 						'<span class="price">--</span>',
 						'<span class="grow">--</span>',
+						'<span class="inner">--</span>',
+						'<span class="outer">--</span>',
+						'<span class="volume">--</span>',
 						'<span class="hands">--</span>',
 						'<span class="remark {remarkFlag}" title="{remark}">加备注</span>',
 						'<a href="#" class="delete" data-key="{key}">X</a>',
@@ -176,6 +179,7 @@ function getLinkUrl(obj){
 
 			utils.ajax(url,function(res){
 				// var ret = new Function('return ' + res)();
+				console.info(res);
 				var arrRet = res.trim().split(";");
 				var obj = {};
 				arrRet.forEach(function(item, index){ 
@@ -194,6 +198,9 @@ function getLinkUrl(obj){
 						code : arr[2],
 						price : arr[3],
 						growRate : arr[32] + '%',
+						inner: arr[8]==arr[7]?"--": (arr[8]/10000.).toFixed(2) + "万",
+						outer: arr[8]==arr[7]?"--": (arr[7]/10000.).toFixed(2) + "万",
+						volume:(arr[37]/10000).toFixed(2)+"亿",
 						hands : (arr[38] ? arr[38] : '0.00') + '%',
 						className : ''
 					}
@@ -317,6 +324,9 @@ function getLinkUrl(obj){
 						item.find(".name a").html(obj.name + '('+ obj.code +')');
 						item.find(".price").html(obj.price).removeClass('increase','reduce').addClass(obj.className);
 						item.find(".grow").html(obj.growRate).removeClass('increase','reduce').addClass(obj.className);
+						item.find(".inner").html(obj.inner);
+						item.find(".outer").html(obj.outer);
+						item.find(".volume").html(obj.volume);
 						item.find(".hands").html(obj.hands);
 					});
 

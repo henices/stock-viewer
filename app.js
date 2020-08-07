@@ -9,7 +9,8 @@
 		}
 		var data = [
 			{key: "sh000001", name: "上证指数", pinyin: "szzs", type: "ZS"},
-			{key: "sz399006", name: "创业板指", pinyin: "cybz", type: "ZS"}
+			{key: "sz399006", name: "创业板指", pinyin: "cybz", type: "ZS"},
+			{key: "sh601211", name: "国泰君安", pinyin: "gtja", type: "ZS"}
 		];
 		while(data.length){
 			Stock.addStock(data.pop());
