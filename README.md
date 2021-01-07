@@ -1,9 +1,5 @@
 # 股票小助手 Chrome 插件
 
-[从Chrome商店安装](https://chrome.google.com/webstore/detail/股票小助手/fgapjjkffggllllignindphnioliplok)
-
-此插件采用腾讯股票数据源。
-
 ## Features
 
 * 无后台行为
