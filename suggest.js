@@ -337,11 +337,16 @@
 				t.hide();
 				return t;
 			}
-			var regFilter = /^(sz|sh|jj|hk)$/i;
+			var regFilter = /^(sz|sh|jj|hk|us)$/i;
 			for (i = 0, len = data.length; (i <= len-1)&&(i < sugMaxNum); i++) {
 				if(!regFilter.test(data[i][0])){
 					continue;
 				}
+                if (data[i][0] == 'us') {
+                    console.log(data[i])
+                    data[i][1] = data[i][1].replace('.oq', '').replace('.n', '').replace('.am', '').replace('.ps', '')
+                    data[i][1] = data[i][1].toUpperCase()
+                }
 				htmlStr.push(utils.tmpl( tpl , data[i] ));
 			}
 			$list.html(htmlStr.join(''));
