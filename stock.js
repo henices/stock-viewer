@@ -321,7 +321,8 @@ function getLinkUrl(obj){
 						if(item == undefined || item.find(".price") == undefined){
 							console.log(item)
 						}
-						item.find(".name a").html(obj.name + '('+ obj.code +')');
+                        //item.find(".name a").html(obj.name + '('+ obj.code +')');
+                        item.find(".name a").html(obj.name);
 						item.find(".price").html(obj.price).removeClass('increase','reduce').addClass(obj.className);
 						item.find(".grow").html(obj.growRate).removeClass('increase','reduce').addClass(obj.className);
 						item.find(".inner").html(obj.inner);
