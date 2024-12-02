@@ -129,8 +129,8 @@
 // 根据不同类型的代码，生成不同的url
 function getLinkUrl(obj){
 	var linkUrl = '', imgUrl = '';
-        linkUrl = 'http://gu.qq.com/' + obj.key;
-	imgUrl = 'http://imgnode.gtimg.cn/hq_img?code='+obj.key+'&type=minute&size=3&proj=news';
+        linkUrl = 'https://gu.qq.com/' + obj.key;
+	imgUrl = 'https://imgnode.gtimg.cn/hq_img?code='+obj.key+'&type=minute&size=3&proj=news';
 	return {
 		linkUrl : linkUrl,
 		imgUrl : imgUrl
@@ -169,7 +169,7 @@ function getLinkUrl(obj){
 		},
 		// 请求数据
 		_loadStockData : function(key,callback){
-			var baseDataUrl = 'http://sqt.gtimg.cn/utf8/';
+			var baseDataUrl = 'https://sqt.gtimg.cn/utf8/';
 			var localDataUrl = localStorage.getItem('stock_dataUrl');
 
 			if(localDataUrl && localDataUrl != 'undefined'){
@@ -179,7 +179,7 @@ function getLinkUrl(obj){
 
 			utils.ajax(url,function(res){
 				// var ret = new Function('return ' + res)();
-				console.info(res);
+				//console.info(res);
 				var arrRet = res.trim().split(";");
 				var obj = {};
 				arrRet.forEach(function(item, index){ 
