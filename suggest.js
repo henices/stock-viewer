@@ -337,7 +337,7 @@
 				t.hide();
 				return t;
 			}
-			var regFilter = /^(sz|sh|jj)$/i;
+			var regFilter = /^(sz|sh|jj|hk)$/i;
 			for (i = 0, len = data.length; (i <= len-1)&&(i < sugMaxNum); i++) {
 				if(!regFilter.test(data[i][0])){
 					continue;
