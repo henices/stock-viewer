@@ -459,11 +459,16 @@ function getLinkUrl(obj){
 
 		var base = curTime.getFullYear() + '/' + (curTime.getMonth() + 1) + '/' + curTime.getDate() + ' ';
 		var startAM = base + '09:15:00'; // 早盘开盘时间
-		var endAM = base + '11:30:00';	// 早盘开盘时间
+		var endAM = base + '12:00:00';	// 早盘开盘时间
 		var startPM = base + '13:00:00';	// 午盘开盘时间
-		var endPM = base + '15:00:00';	// 午盘闭盘时间
+		var endPM = base + '16:00:00';	// 午盘闭盘时间
 
-		if(+curTime < +new Date(startAM) || ( +new Date(endAM) < +curTime && +curTime < +new Date(startPM) ) || +curTime > +new Date(endPM) ){
+        var startUS = base + '21:30:00';
+        var endUS = base + '05:00:00'
+
+		if( ( +new Date(endAM) < +curTime && +curTime < +new Date(startPM) ) || 
+          ( +curTime > +new Date(endPM) && +curTime < +new Date(startUS) ) ||
+          ( +curTime > +new Date(endUS) && +curTime < +new Date(startAM) ) ) {
 			clearInterval(timer);
 		}
 	})();

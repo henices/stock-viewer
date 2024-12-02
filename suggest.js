@@ -343,9 +343,9 @@
 					continue;
 				}
                 if (data[i][0] == 'us') {
-                    console.log(data[i])
-                    data[i][1] = data[i][1].replace('.oq', '').replace('.n', '').replace('.am', '').replace('.ps', '')
-                    data[i][1] = data[i][1].toUpperCase()
+                    console.log(data[i]);
+                    data[i][1] = data[i][1].replace('.oq', '').replace('.n', '').replace('.am', '').replace('.ps', '');
+                    data[i][1] = data[i][1].toUpperCase();
                 }
 				htmlStr.push(utils.tmpl( tpl , data[i] ));
 			}
