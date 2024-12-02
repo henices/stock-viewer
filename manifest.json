@@ -1,8 +1,7 @@
 {
-   "browser_action": {
+   "action": {
       "default_popup": "index.html"
    },
-   "content_security_policy": "script-src 'self'; object-src 'self'",
    "description": "开发利器",
    "icons": {
       "128": "images/icons/flower.png",
@@ -10,8 +9,9 @@
       "32": "images/icons/flower.png",
       "48": "images/icons/flower.png"
    },
-   "manifest_version": 2,
+   "manifest_version": 3,
    "name": "我的小助手",
-   "permissions": [ "storage", "*://*.gtimg.cn/*" ],
-   "version": "1.9.1"
+   "permissions": ["storage"],
+   "host_permissions": ["*://*.gtimg.cn/*"],
+   "version": "1.9.2"
 }
