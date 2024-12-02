@@ -449,7 +449,7 @@ function getLinkUrl(obj){
 		clearInterval(timer);
 		timer = setInterval(function(){
 			Stock.updateStockData();
-		},1000);		
+		},5000);
 	}
 	startRender();
 
