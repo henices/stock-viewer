@@ -39,13 +39,13 @@
 				$('.iconlist .icon').removeClass('cur');
 				$(this).addClass('cur');
 
-				chrome.browserAction.setIcon({path: 'images/icons/' + name + '.png'});
+				chrome.action.setIcon({path: 'images/icons/' + name + '.png'});
 			}).delegate('.close', 'click', function(e){
 				$('#setting').hide();
 				$('.mask').hide();
 			}).delegate('.default', 'click', function(e){
 				localStorage.removeItem('stock_icon');
-				chrome.browserAction.setIcon({path: 'images/logo48.png'});
+				chrome.action.setIcon({path: 'images/logo48.png'});
 			});
 
 			$(".importexport").on('click', function(e){
