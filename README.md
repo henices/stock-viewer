@@ -1,5 +1,7 @@
 # 股票小助手 Chrome 插件
 
+<img width="576" alt="image" src="https://github.com/user-attachments/assets/2ee4d7ea-a49c-43d7-9e1f-4e48a25552c6">
+
 ## Features
 
 * 无后台行为
