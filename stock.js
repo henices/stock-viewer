@@ -194,6 +194,10 @@ function getLinkUrl(obj){
 				var data = {};
 				for(var key in obj){
 					var arr = obj[key].split("~");
+					var volume_fixed = (arr[37]/10000).toFixed(2);
+					if (volume_fixed > 10000) {
+						volume_fixed = (arr[37]/10000/10000).toFixed(2);
+					}
 					var temp = {
 						key : key,
 						name : arr[1],
@@ -204,7 +208,7 @@ function getLinkUrl(obj){
 						inner: arr[8]==arr[7]?"--": (arr[8]/10000.).toFixed(2) + "万",
 						outer: arr[8]==arr[7]?"--": (arr[7]/10000.).toFixed(2) + "万",
 */
-						volume:(arr[37]/10000).toFixed(2)+"亿",
+						volume: volume_fixed + "亿",
 						hands : (arr[38] ? arr[38] : '0.00') + '%',
 						className : ''
 					}
