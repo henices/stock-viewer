@@ -195,7 +195,7 @@ function getLinkUrl(obj){
 				for(var key in obj){
 					var arr = obj[key].split("~");
 					var volume_fixed = (arr[37]/10000).toFixed(2);
-					if (volume_fixed > 10000) {
+					if (key.indexOf('hk') !== -1 || key.indexOf('us') !== -1) {
 						volume_fixed = (arr[37]/10000/10000).toFixed(2);
 					}
 					var temp = {
