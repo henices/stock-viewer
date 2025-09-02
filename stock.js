@@ -194,9 +194,11 @@ function getLinkUrl(obj){
 				var data = {};
 				for(var key in obj){
 					var arr = obj[key].split("~");
-					var volume_fixed = (arr[37]/10000).toFixed(2);
+					var volume_fixed = 0.00;
 					if (key.indexOf('hk') !== -1 || key.indexOf('us') !== -1) {
 						volume_fixed = (arr[37]/10000/10000).toFixed(2);
+					} else {
+						volume_fixed = (arr[37]/10000).toFixed(2)
 					}
 					var temp = {
 						key : key,
