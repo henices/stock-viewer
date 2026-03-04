@@ -15,7 +15,7 @@ https://github.com/user-attachments/assets/e55a9136-17f0-4c49-85a0-83f4db5ae286
 ## Install
 
 下载最新的 zip 文件后解压缩。
-https://github.com/henices/stock-viewer/archive/refs/tags/1.9.2.zip
+https://github.com/henices/stock-viewer/archive/refs/tags/1.9.3.zip
 
 1. 设置 -> 拓展程序 打开右上角的 「开发者模式」
 2. 左上角 「加载已解压的拓展程序」，选择前面下载后解压的 stock-viewer 文件夹
