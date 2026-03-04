@@ -339,6 +339,7 @@ function getLinkUrl(obj){
 						}
 						//item.find(".name a").html(obj.name + '('+ obj.code +')');
 						item.find(".name a").html(obj.name);
+						item.removeClass('increase reduce flat').addClass(obj.className || 'flat');
 						item.find(".price").html(obj.price).removeClass('increase','reduce').addClass(obj.className);
 						item.find(".grow").html(obj.growRate).removeClass('increase','reduce').addClass(obj.className);
 /*
@@ -471,26 +472,48 @@ function getLinkUrl(obj){
 	}
 	startRender();
 
-	// 一个简单的检测是否开盘时间，否则停止更新数据
-	(function(){
-		var curTime = new Date();
+	// 检测是否需要刷新行情数据（北京时间）
+	// A股:  09:15 ~ 15:00
+	// 港股: 09:30 ~ 16:00 (+30分钟延迟 → 16:30)
+	// 美股: 冬令 22:30~05:00 / 夏令 21:30~04:00 (+30分钟延迟 → 最晚 05:30)
+	// 合并活跃窗口: 09:15~16:30, 21:30~次日05:30
+	(function() {
+		var now = new Date();
+		var day = now.getDay(); // 0=周日, 6=周六
 
-		var base = curTime.getFullYear() + '/' + (curTime.getMonth() + 1) + '/' + curTime.getDate() + ' ';
-		var startAM = base + '09:15:00'; // 早盘开盘时间
-		var endAM = base + '12:00:00';	// 早盘开盘时间
-		var startPM = base + '13:00:00';	// 午盘开盘时间
-		var endPM = base + '16:30:00';	// 午盘闭盘时间
+		// 当前时间转分钟数 (0~1439)
+		var minutes = now.getHours() * 60 + now.getMinutes();
 
-		var startUS = base + '21:30:00';
-		var endUS = base + '05:30:00'
+		var isWeekday = (day >= 1 && day <= 5);
 
-		if( ( +new Date(endAM) < +curTime && +curTime < +new Date(startPM) ) || 
-		  ( +curTime > +new Date(endPM) && +curTime < +new Date(startUS) ) ||
-		  ( +curTime > +new Date(endUS) && +curTime < +new Date(startAM) ) ) {
+		// 周六: 只有凌晨段可能有美股尾盘 (00:00~05:30)
+		// 周日: 全天无交易
+		// 周一~周五: 09:15~16:30 和 21:30~23:59
+		// 周一凌晨无美股 (周日美股不开盘)
+
+		var inSession = false;
+
+		if (day === 0) {
+			// 周日：全天停止
+			inSession = false;
+		} else if (day === 6) {
+			// 周六：只有凌晨 00:00~05:30 可能有美股收盘数据
+			inSession = (minutes <= 330); // 5*60+30
+		} else if (day === 1) {
+			// 周一：白天正常，但凌晨段无美股（周日不开盘）
+			inSession = (minutes >= 555 && minutes <= 990)  // 09:15~16:30
+					 || (minutes >= 1290);                  // 21:30~23:59
+		} else {
+			// 周二~周五：白天 + 晚间 + 凌晨
+			inSession = (minutes <= 330)                    // 00:00~05:30 (前一晚美股)
+					 || (minutes >= 555 && minutes <= 990)  // 09:15~16:30
+					 || (minutes >= 1290);                  // 21:30~23:59
+		}
+
+		if (!inSession) {
 			clearInterval(timer);
 		}
 	})();
-
 	window.LocalData = LocalData;
 	window.Stock = Stock;
 })(jQuery)
