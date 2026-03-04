@@ -13,5 +13,5 @@
    "name": "我的小助手",
    "permissions": ["storage"],
    "host_permissions": ["*://*.gtimg.cn/*"],
-   "version": "1.9.2"
+   "version": "1.9.4"
 }
