@@ -198,7 +198,7 @@
 					
 					t.config.submitCallback(val);
 					t.hide();
-					$input.val('');
+					$input.val('').trigger('input');
 				}
 				
 			});
@@ -257,7 +257,7 @@
 				var val = el.attr("data-pre") + "  " + arr.join("  ");
 				t.config.submitCallback(val);
 				t.hide();
-				$input.val('');
+				$input.val('').trigger('input');
 			});
 
 			return t;
