@@ -20,13 +20,12 @@
 	(function(){
 		var renderIconHtml = function(){
 			var confIcons = ['rabbit', 'panda', 'mouse', 'lips', 'bear', 'dog', 'angrybird', 'hellokitty', 'octopus', 'tiger', 'flower', 'crab'];
-			// window.confIcons = confIcons;
 			var html = [];
 			while(confIcons.length){
 				var icon = confIcons.shift();
 				html.push('<a href="#" class="icon" data-id="' + icon + '"><img src="images/icons/' + icon + '.png"/></a>');
 			}
-			$('#setting .iconlist').html(html.join(""));			
+			$('#setting .iconlist').html(html.join(""));
 		}
 		var bindEvent = function(){
 			$('.setting').on('click', function(e){
@@ -84,6 +83,33 @@
 
 	})();
 
+	/* ========== 标签页切换逻辑 ========== */
+	(function(){
+		// 初始化指数行情模块
+		IndexMarket.init();
+
+		// 带 data-type 的 tab 做面板切换，其余 tab (设置/导入导出) 保持原弹窗行为
+		$('.nav-tabs').on('click', '.tab[data-type]', function(e){
+			e.preventDefault();
+			var $this = $(this);
+			var type = $this.attr('data-type');
+
+			// 切换 tab 高亮
+			$('.nav-tabs .tab').removeClass('on');
+			$this.addClass('on');
+
+			// 切换面板
+			$('.tab-content .tab-pane').removeClass('on');
+
+			if(type === 'default'){
+				$('#pane-stock').addClass('on');
+				IndexMarket.deactivate();
+			} else if(type === 'index-market'){
+				$('#pane-index-market').addClass('on');
+				IndexMarket.activate();
+			}
+		});
+	})();
 
 	var baseSugUrl = 'http://smartbox.gtimg.cn/s3/?t=all';
 	var localBaseSugUrl = localStorage.getItem('stock_sugUrl');
@@ -95,7 +121,6 @@
 		template : {
 			item : '<div class="sug-item" data-pre="{0}" data-item="{0}{1}" data-type={4}>'+
 						'<span class="key">{1}</span><span class="name">{2}</span><span class="pinyin">{3}</span>'+
-						// '<span class="sug-plus"></span>'+
 					'</div>'
 		},
 		requestUrl : baseSugUrl,
@@ -117,6 +142,4 @@
 		isCache : false
 	});
 	window.TYPE = "financeQQ";
-	
 })(jQuery);
-
