@@ -129,7 +129,7 @@
 // 根据不同类型的代码，生成不同的url
 function getLinkUrl(obj){
 	var linkUrl = '', imgUrl = '';
-        linkUrl = 'https://gu.qq.com/' + obj.key;
+		linkUrl = 'https://gu.qq.com/' + obj.key;
 	imgUrl = 'https://imgnode.gtimg.cn/hq_img?code='+obj.key+'&type=minute&size=3&proj=news';
 	return {
 		linkUrl : linkUrl,
@@ -211,7 +211,13 @@ function getLinkUrl(obj){
 						outer: arr[8]==arr[7]?"--": (arr[7]/10000.).toFixed(2) + "万",
 */
 						volume: volume_fixed + "亿",
-						hands : (arr[38] ? arr[38] : '0.00') + '%',
+						hands : (function(){
+							var h = arr[38];
+							if (key.indexOf('hk') !== -1 || key.indexOf('us.') !== -1) {
+								if (!h || parseFloat(h) === 0) return '--';
+							}
+							return (h ? h : '0.00') + '%';
+						})(),
 						className : ''
 					}
 					if(arr[3] == '0.00'){
@@ -331,8 +337,8 @@ function getLinkUrl(obj){
 						if(item == undefined || item.find(".price") == undefined){
 							console.log(item)
 						}
-                        //item.find(".name a").html(obj.name + '('+ obj.code +')');
-                        item.find(".name a").html(obj.name);
+						//item.find(".name a").html(obj.name + '('+ obj.code +')');
+						item.find(".name a").html(obj.name);
 						item.find(".price").html(obj.price).removeClass('increase','reduce').addClass(obj.className);
 						item.find(".grow").html(obj.growRate).removeClass('increase','reduce').addClass(obj.className);
 /*
@@ -442,7 +448,7 @@ function getLinkUrl(obj){
 				activate : function(event,ui){
 					ui.item.removeClass('hover');
 				},
-				deactivate : function(event,ui){      	
+				deactivate : function(event,ui){
 					self.sortStock();
 				}
 			});
@@ -475,12 +481,12 @@ function getLinkUrl(obj){
 		var startPM = base + '13:00:00';	// 午盘开盘时间
 		var endPM = base + '16:30:00';	// 午盘闭盘时间
 
-        var startUS = base + '21:30:00';
-        var endUS = base + '05:30:00'
+		var startUS = base + '21:30:00';
+		var endUS = base + '05:30:00'
 
 		if( ( +new Date(endAM) < +curTime && +curTime < +new Date(startPM) ) || 
-          ( +curTime > +new Date(endPM) && +curTime < +new Date(startUS) ) ||
-          ( +curTime > +new Date(endUS) && +curTime < +new Date(startAM) ) ) {
+		  ( +curTime > +new Date(endPM) && +curTime < +new Date(startUS) ) ||
+		  ( +curTime > +new Date(endUS) && +curTime < +new Date(startAM) ) ) {
 			clearInterval(timer);
 		}
 	})();
