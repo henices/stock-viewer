@@ -10,7 +10,8 @@
 	* { box-sizing: border-box; }
 	body {
 		width: 620px;
-		height: 400px;
+		min-height: 400px;
+		height: auto;
 		font-size: 13px;
 		font-family: -apple-system, "SF Pro Text", "Helvetica Neue", "PingFang SC", "Microsoft YaHei", sans-serif;
 		color: #1a1a2e;
@@ -85,24 +86,23 @@
 	.tab-content .on { display: block; }
 
 	/* ===== SEARCH BAR ===== */
-	.search {
-		display: flex;
-		padding: 4px 0 8px 0;
-		z-index: 99;
-		width: 100%;
-	}
-	.search-input {
-		flex: 1;
-		display: block;
-		border: 1px solid #dcdee3;
-		border-radius: 6px 0 0 6px;
-		background: #fff;
-		transition: border-color 0.2s, box-shadow 0.2s;
-	}
-	.search-input:focus-within {
-		border-color: #3b6df0;
-		box-shadow: 0 0 0 2px rgba(59,109,240,0.12);
-	}
+.search {
+	display: flex;
+	padding: 4px 0 8px 0;
+	z-index: 99;
+	width: 100%;
+}
+.search-input {
+	flex: 1;
+	display: block;
+	border: 1px solid #dcdee3;
+	border-radius: 6px 0 0 6px;
+	background: #fff;
+	transition: border-color 0.2s;
+}
+.search:focus-within .search-input {
+	border-color: #b0b3bc;
+}
 	.search input {
 		display: block;
 		width: 100%;
@@ -177,14 +177,23 @@
 	.sug .sug-clear, .sug .sug-close { padding: 0 15px; cursor: pointer; }
 	.sug .sug-clear { float: left; border-right: 1px solid #e8e8ec; }
 	.sug .sug-close { float: right; border-left: 1px solid #e8e8ec; }
+	.sug-list .hover { background: #f0f3ff; }
 	.sug-quickdel {
 		display: none;
-		width: 18px; height: 18px; padding: 4px;
+		position: absolute;
+		right: 70px;
+		top: 50%;
+		transform: translateY(-50%);
+		width: 16px; height: 16px;
+		cursor: pointer;
 		background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACIAAAAiCAYAAAA6RwvCAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAvNJREFUeNrMmL+PEkEUx4fFAw5EbfQChMJAAZqcxuYaG3ONOe1stDfxP/AsLU8b/QO0viu0O43NxUZjaC6G5AKBvRgCzXEUePJ7IfE98nZvWHZmhx9rfMm3Yd7M+7DzZubN+HK5HPsf7MKM/hdBD0D3QLdB10GXqe036BfoJ+gr6BOotWyQNGgb9AQUEfhcI22AnoHaoF3QK5DuFkBzaQ+BdkBHoKcSCCeLUJ8jggnNC5IC/aAvEVhg+rHvcxorPSvIHdB3yoNlGY71jcZWAkHqL6A1DxbHGo2ddgNZBX0AXfVwpeLYHymWEOQl6NY/2DbWKZZlPm5Dw+QsgFbsvWKxGEskEqzb7bJyucwGg4E8OwMBlkqlWDgcZtVqldXrdSc3A3TDXNr8F3nhBIEWj8eZpmmsEomwbDY7DiSDyGQyLBqNMr/fz5LJpMh1hWJOTE2UNitHwy9hWjAYFMKYEKHQ+ZbRbrdlH+8xxbZAtmSbla7rrNfrSWGcIPAPYF+XTW+LB9mUeWNOFItFIYwIolAosOFw6Ja4mzzIupu3DMYJAn0VIKzYGrdi2LwwThCGYagu5RQPckm1F8LgJ+dhTMPfZoSwYmvz7EY+n0/4u6hNtQw4Uz5KHRJTZWlL7IwHOZ4XAqdDdZ8R2DEPkleBwAB2CMwJ1AIweR7kQAUCA9ghMHkxOReAOeBBPlON6VywptNCCOsEAxhcTZ1OZwIGDz+JdSi2BfIHtCfyXl09Lx36/f4UhGm4gWGbHUZiuxR7Yvnu0NE8ZZVKhY1GI9Zqtcb/WlYGmDDNZnPsV6vVRK4GFdVT1wk8nd5QoTthjUZjLFVDmFKp5Ob2FlSWVWh55r3l7RWaHQTT/hHo1EOIU4rRcavicYrug048gDihsXXVe80h6O6SpylPYx7OetPT6R77WrSaFM2gMTZkd2C307dHV86boHf2eXUxzLf31HebxhKf6DO+j+CzxEPbs8QVamvaniX2vXiWMK1FO/DesrP4rwADAKUsNqKpueWJAAAAAElFTkSuQmCC) center center no-repeat;
-		background-size: 20px 20px;
+		background-size: 14px 14px;
+		opacity: 0.4;
+		transition: opacity 0.2s;
 	}
-	.sug-list .hover { background: #f0f3ff; }
-
+	.sug-quickdel:hover {
+		opacity: 0.7;
+	}
 	/* ===== STOCK LIST (自选股) ===== */
 	#zxg { position: relative; }
 	.loading {
@@ -197,22 +206,21 @@
 		backdrop-filter: blur(2px);
 	}
 	.zxg-stock .zxg-hd {
-		height: 32px;
-		line-height: 32px;
-		background: #f5f6fa;
+		height: 36px;
+		line-height: 36px;
+		background: #eef0f5;
 		border-radius: 6px;
 		padding: 0 2px;
 		font-size: 12px;
-		color: #8c8c9a;
-		font-weight: 500;
+		color: #6b6d7a;
+		font-weight: 600;
+		letter-spacing: 0.3px;
 	}
 	.zxg-stock .zxg-bd {
 		position: relative;
-		height: 290px;
-		overflow-y: auto;
 	}
-	.zxg-stock .increase { color: #cf1322; }
-	.zxg-stock .reduce { color: #389e0d; }
+	.zxg-stock .increase { color: #cf1322; font-weight: 600; }
+	.zxg-stock .reduce { color: #389e0d; font-weight: 600; }
 	.zxg-stock span {
 		display: inline-block;
 		float: left;
@@ -220,14 +228,17 @@
 	}
 	.zxg-stock li {
 		position: relative;
-		height: 30px;
-		line-height: 30px;
+		height: 36px;
+		line-height: 36px;
 		border: solid 1px transparent;
 		border-bottom-color: #f0f0f3;
-		font-size: 12.5px;
+		font-size: 13px;
 		transition: background 0.15s;
 	}
-	.zxg-stock li:hover { background: #f5f7ff; }
+	.zxg-stock li:nth-child(even) {
+		background: #f8f9fc;
+	}
+	.zxg-stock li:hover { background: #edf1ff; }
 	.zxg-stock li .trendImg {
 		position: absolute;
 		height: auto; width: auto;
@@ -244,13 +255,13 @@
 		margin-right: .3em;
 	}
 	.zxg-stock .remark { width: 45px; height: 100%; cursor: pointer; text-align: center; }
-	.zxg-stock .name { width: 100px; height: 30px; overflow: hidden; font-weight: 500; }
-	.zxg-stock .price { width: 85px; }
-	.zxg-stock .grow { width: 70px; text-align: center; }
+	.zxg-stock .name { width: 100px; height: 36px; overflow: hidden; font-weight: 600; }
+	.zxg-stock .price { width: 85px; font-variant-numeric: tabular-nums; }
+	.zxg-stock .grow { width: 70px; text-align: center; font-variant-numeric: tabular-nums; }
 	.zxg-stock .inner { width: 70px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; text-align: center; }
 	.zxg-stock .outer { width: 70px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; text-align: center; }
-	.zxg-stock .volume { width: 110px; text-align: center; }
-	.zxg-stock .hands { width: 70px; text-align: center; }
+	.zxg-stock .volume { width: 110px; text-align: center; font-variant-numeric: tabular-nums; }
+	.zxg-stock .hands { width: 70px; text-align: center; font-variant-numeric: tabular-nums; }
 	.zxg-stock .delete { width: 45px; text-align: center; }
 	.zxg-stock .zxg-list .remark,
 	.zxg-stock .zxg-list .delete,
@@ -261,7 +272,7 @@
 	.zxg-stock .zxg-list .remark {
 		height: 18px; width: 18px;
 		text-align: left; text-indent: -999em;
-		margin: 6px 10px 0 22px;
+		margin: 9px 10px 0 22px;
 		border: solid 1px transparent;
 		background-position: -7px -28px;
 		border-radius: 3px;
@@ -275,7 +286,7 @@
 	.zxg-stock .zxg-list .delete {
 		display: inline-block;
 		height: 18px; width: 18px;
-		margin: 6px 11px 0;
+		margin: 9px 11px 0;
 		background-position: -6px -52px;
 		text-indent: -999em;
 		border: solid 1px transparent;
