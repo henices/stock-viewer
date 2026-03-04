@@ -733,6 +733,104 @@
 		margin-top: 8px;
 		padding-right: 4px;
 	}
+
+	/* ===== SECTOR HEATMAP ===== */
+	#pane-sector-heatmap { padding: 4px 6px 8px; }
+	#heatmap-container {
+		position: relative;
+		width: 100%;
+		height: 380px;
+		background: #f6f5f2;
+		border-radius: 6px;
+		overflow: visible;
+		overflow: hidden;
+	}
+	#heatmap-canvas {
+		display: block;
+		border-radius: 6px;
+	}
+	#heatmap-loading {
+		position: absolute;
+		top: 0; left: 0;
+		width: 100%; height: 100%;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		background: rgba(255,255,253,0.85);
+		z-index: 5;
+		font-size: 13px;
+		color: #8c8880;
+	}
+	#heatmap-tooltip {
+		display: none;
+		position: absolute;
+		z-index: 20;
+		background: rgba(50,46,38,0.92);
+		color: #f0eee8;
+		border-radius: 6px;
+		padding: 8px 12px;
+		font-size: 12px;
+		pointer-events: none;
+		backdrop-filter: blur(4px);
+		box-shadow: 0 4px 16px rgba(46,40,30,0.2);
+		min-width: 155px;
+	}
+	.hm-tip-name {
+		font-weight: 600;
+		font-size: 13px;
+		margin-bottom: 4px;
+		padding-bottom: 4px;
+		border-bottom: 1px solid rgba(255,255,255,0.15);
+	}
+	.hm-tip-row {
+		display: flex;
+		justify-content: space-between;
+		line-height: 1.8;
+		font-variant-numeric: tabular-nums;
+	}
+	.hm-tip-row span:first-child { color: #b5ad9e; margin-right: 12px; }
+	.tip-increase { color: #ff8a8a; }
+	.tip-reduce   { color: #7ddb7d; }
+	.tip-flat     { color: #c5c0b8; }
+	#heatmap-bar {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		padding: 6px 2px 4px;
+	}
+	#heatmap-bar .hm-legend {
+		display: flex;
+		align-items: center;
+		gap: 2px;
+		font-size: 10px;
+		color: #8c8880;
+	}
+	.hm-legend-block {
+		display: inline-block;
+		width: 16px; height: 10px;
+		border-radius: 2px;
+	}
+	#heatmap-weight-toggle {
+		font-size: 11px;
+		color: #8b7355;
+		cursor: pointer;
+		background: #f0eeea;
+		border: 1px solid #d9d5ce;
+		border-radius: 4px;
+		padding: 2px 10px;
+		transition: all 0.2s;
+	}
+	#heatmap-weight-toggle:hover {
+		background: #e4e0d8;
+		border-color: #8b7355;
+	}
+	#heatmap-update-time-bar {
+		text-align: right;
+		font-size: 10.5px;
+		color: #b5ad9e;
+		padding-right: 4px;
+		margin-top: 2px;
+	}
 </style>
 <link rel="stylesheet" href="jquery-ui.css">
 	</head>
@@ -755,6 +853,7 @@
 		<ul class="nav-tabs">
 			<li class="tab on" data-type="default"><a href="#">我的自选</a></li>
 			<li class="tab" data-type="index-market"><a href="#" class="index-tab">指数行情</a></li>
+			<li class="tab" data-type="sector-heatmap"><a href="#">板块热力图</a></li>
 			<li class="tab"><a href="#" class="setting">个人设置</a></li>
 			<li class="tab"><a href="#" class="importexport">导出导入</a></li>
 		</ul>
@@ -776,10 +875,6 @@
 							<span class="name">名称(代码)</span>
 							<span class="price">最新价</span>
 							<span class="grow">涨跌幅</span>
-<!--
-							<span class="inner">内盘</span>
-							<span class="outer">外盘</span>
--->
 							<span class="volume">成交额</span>
 							<span class="hands">换手率</span>
 							<span class="remark">备注</span>
@@ -800,6 +895,30 @@
 						<!-- 由JS动态渲染 -->
 					</div>
 					<div class="update-time" id="index-update-time"></div>
+				</div>
+			</div>
+			<!-- 板块热力图面板 -->
+			<div class="tab-pane" id="pane-sector-heatmap">
+				<div id="heatmap-bar">
+					<div class="hm-legend">
+						<span class="hm-legend-block" style="background:#1a820a"></span>
+						<span>-3%</span>
+						<span class="hm-legend-block" style="background:#a0d9a0"></span>
+						<span class="hm-legend-block" style="background:#c5c0b8"></span>
+						<span class="hm-legend-block" style="background:#eba0a0"></span>
+						<span class="hm-legend-block" style="background:#a01020"></span>
+						<span>+3%</span>
+						<span style="margin-left:8px;color:#b5ad9e;font-size:10px">申万一级行业</span>
+					</div>
+					<button id="heatmap-weight-toggle">成交额加权</button>
+				</div>
+				<div id="heatmap-container">
+					<div id="heatmap-loading">加载中...</div>
+					<canvas id="heatmap-canvas"></canvas>
+					<div id="heatmap-tooltip"></div>
+				</div>
+				<div id="heatmap-update-time-bar">
+					<span id="heatmap-update-time"></span>
 				</div>
 			</div>
 			<div class="tab-pane">
@@ -839,5 +958,6 @@
 	<script src="suggest.js"></script>
 	<script src="stock.js"></script>
 	<script src="index-market.js"></script>
+	<script src="sector-heatmap.js"></script>
 	<script src="app.js"></script>
 </html>

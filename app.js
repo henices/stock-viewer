@@ -85,8 +85,9 @@
 
 	/* ========== 标签页切换逻辑 ========== */
 	(function(){
-		// 初始化指数行情模块
+		// 初始化
 		IndexMarket.init();
+		SectorHeatmap.init();
 
 		// 带 data-type 的 tab 做面板切换，其余 tab (设置/导入导出) 保持原弹窗行为
 		$('.nav-tabs').on('click', '.tab[data-type]', function(e){
@@ -101,12 +102,18 @@
 			// 切换面板
 			$('.tab-content .tab-pane').removeClass('on');
 
+			// 先全部 deactivate
+			IndexMarket.deactivate();
+			SectorHeatmap.deactivate();
+
 			if(type === 'default'){
 				$('#pane-stock').addClass('on');
-				IndexMarket.deactivate();
 			} else if(type === 'index-market'){
 				$('#pane-index-market').addClass('on');
 				IndexMarket.activate();
+			} else if(type === 'sector-heatmap'){
+				$('#pane-sector-heatmap').addClass('on');
+				SectorHeatmap.activate();
 			}
 		});
 	})();
