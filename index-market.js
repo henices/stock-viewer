@@ -11,8 +11,8 @@
 		{ key: 'hkHSTECH', name: '恒生科技指数', short: '恒科' },
 		{ key: 'hkHSCEI',  name: '恒生国企指数', short: '国企' },
 		{ key: 'us.DJI',   name: '道琼斯', short: '道琼斯' },
-		{ key: 'us.INX',   name: '标普500', short: '标普500' },
-		{ key: 'us.NDX',   name: '纳斯达克100', short: '纳指100' }
+		{ key: 'us.IXIC',  name: '纳斯达克', short: '纳斯达克' },
+		{ key: 'us.HXC',   name: '中国金龙', short: '金龙' }
 	];
 
 	var indexTimer = null;
