@@ -25,44 +25,27 @@
 		'石油石化': '石化', '美容护理': '美护',
 
 		// ====== 二级 - 仅5字以上需要缩写 ======
-		// 农林牧渔
 		'农产品加工': '农产加工',
-		// 化工
 		'其他化学制品': '其他化制', '非金属材料': '非金属材',
-		// 有色金属
 		'金属新材料': '金属新材',
-		// 电子
 		'光学光电子': '光电子',
-		// 食品饮料
 		'调味发酵品': '调味发酵',
-		// 商贸零售
 		'商业物业经营': '物业经营', '互联网电商': '互联电商',
-		// 社会服务
 		'旅游及景区': '旅游景区',
-		// 房地产
 		'房地产开发': '房产开发', '房地产服务': '房产服务',
-		// 电力设备
 		'其他电源设备': '电源设备', '自动化设备': '自动化',
-		// 计算机
 		'计算机设备': '计算机',
-		// 银行
 		'国有大型银行': '国有大行', '股份制银行': '股份银行',
-		// 汽车
 		'汽车零部件': '汽零部件', '摩托车及其他': '摩托车',
-		// 石油石化
 		'炼化及贸易': '炼化贸易'
 	};
 
 	/* ========== 名称缩写 ========== */
 	function getShortName(name) {
-		// 去掉末尾 Ⅱ/II 后缀
 		var clean = name.replace(/Ⅱ$/, '').replace(/II$/, '');
-		// 优先查表
 		if (SHORT_NAMES[clean]) return SHORT_NAMES[clean];
 		if (SHORT_NAMES[name]) return SHORT_NAMES[name];
-		// ≤4字直接保留
 		if (clean.length <= 4) return clean;
-		// 5字以上: 取前4字
 		return clean.substring(0, 4);
 	}
 
@@ -172,10 +155,10 @@
 		resizeCanvas();
 	}
 
-	// 一级/二级的 popup 尺寸配置
+	// ★ 改动1: 二级 popup 加高加宽, 总面积从 780×460=359K → 800×560=448K, +25%
 	var LAYOUT = {
 		hy:  { bodyW: 620, mapH: 380 },
-		hy2: { bodyW: 780, mapH: 460 }
+		hy2: { bodyW: 800, mapH: 500 }
 	};
 
 	function applyLayout() {
@@ -189,8 +172,7 @@
 		if (!container || !canvas) return;
 		var cfg = LAYOUT[levelMode] || LAYOUT.hy;
 		var h = cfg.mapH;
-		var expectedW = cfg.bodyW - 12;  // pane padding: 6px × 2
-		// 用容器实际宽度, reflow 前可能还是旧值则用配置值
+		var expectedW = cfg.bodyW - 12;
 		var w = container.clientWidth;
 		if (!w || Math.abs(w - expectedW) > 30) w = expectedW;
 		canvas.style.width = w + 'px';
@@ -200,7 +182,6 @@
 		ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
 	}
 
-	// applyLayout 后延迟重刷 canvas 尺寸，确保 reflow 完成
 	function layoutAndResize() {
 		applyLayout();
 		resizeCanvas();
@@ -225,7 +206,6 @@
 			if (weightMode === 'volume') weight = turnover;
 			else if (weightMode === 'mktcap') weight = ltsz;
 
-			// 开平方根压缩权重差异, 避免大行业占满、小行业挤角落
 			if (weight > 1) weight = Math.sqrt(weight);
 
 			items.push({
@@ -252,6 +232,7 @@
 		cellRects = [];
 
 		var isLevel2 = (levelMode === 'hy2');
+		var FONT = '-apple-system, "Noto Sans SC", sans-serif';
 
 		for (var i = 0; i < rects.length; i++) {
 			var r = rects[i], d = r.item;
@@ -280,62 +261,79 @@
 			              d.rate < 0 ? d.rate.toFixed(2) + '%' : '0.00%';
 			var shortRate = d.rate > 0 ? '+' + d.rate.toFixed(1) + '%' :
 			                d.rate < 0 ? d.rate.toFixed(1) + '%' : '0.0%';
-			var FONT = '-apple-system, "Noto Sans SC", sans-serif';
 
-			// 根据格子大小自适应: 名称 + 涨幅, 名称放不下则换行
+			// ★ 改动2: 6档自适应文字策略
+			//
+			// T1  大格子    完整名称 + 完整涨幅   化学制品 +3.20%
+			// T2  中格子    完整名称 + 短涨幅     化学制品 +3.2%
+			// T3  小格子    2字名称 + 短涨幅      化制 +3.2%
+			// T4  更小      2字名称 + 整数涨幅    化制 +3%
+			// T5  极小      只显示短涨幅          +3.2  (名称靠 tooltip)
+			// T6  最小      纯色块                      (tooltip 兜底)
+
 			if (rw > 58 && rh > 44) {
-				drawLabel(13, rw - 6, 11, rateStr, 10);
+				// T1: 大格子
+				drawLabel(ctx, d, cx, cy, rw, rh, 13, rw - 6, 11, rateStr, 10, FONT);
 			} else if (rw > 44 && rh > 34) {
-				drawLabel(11, rw - 4, 10, shortRate, 8);
-			} else if (rw > 32 && rh > 26) {
-				// 小格子: 2字 + 涨幅
+				// T2: 中格子
+				drawLabel(ctx, d, cx, cy, rw, rh, 11, rw - 4, 10, shortRate, 8, FONT);
+			} else if (rw > 30 && rh > 26) {
+				// T3: 小格子 - 2字 + 短涨幅
 				ctx.font = 'bold 10px ' + FONT;
-				ctx.fillText(d.short.substring(0, 2), cx, cy - 5);
+				ctx.fillText(d.short.substring(0, 2), cx, cy - 6);
 				ctx.font = '9px ' + FONT;
 				ctx.fillText(shortRate, cx, cy + 6);
-			} else if (rw > 20 && rh > 16) {
+			} else if (rw > 24 && rh > 20) {
+				// T4: 更小 - 2字 + 整数涨幅
+				var tinyRate = d.rate > 0 ? '+' + d.rate.toFixed(0) :
+				               d.rate < 0 ? d.rate.toFixed(0) : '0';
 				ctx.font = 'bold 9px ' + FONT;
-				ctx.fillText(d.short.substring(0, 2), cx, cy);
+				ctx.fillText(d.short.substring(0, 2), cx, cy - 5);
+				ctx.font = '8px ' + FONT;
+				ctx.fillText(tinyRate + '%', cx, cy + 5);
+			} else if (rw > 16 && rh > 12) {
+				// T5: 极小 - 只显示涨幅 (关键信息: 资金方向; 名称靠 tooltip)
+				var miniRate = d.rate > 0 ? '+' + d.rate.toFixed(1) :
+				               d.rate < 0 ? d.rate.toFixed(1) : '0.0';
+				ctx.font = '8px ' + FONT;
+				ctx.fillText(miniRate, cx, cy);
 			}
+			// T6: rw<=16 || rh<=12 → 纯色块
+		}
+	}
 
-			// 绘制名称(支持换行) + 涨幅
-			function drawLabel(nameFontSize, maxW, rateFontSize, rateText, gap) {
-				var nameFont = 'bold ' + nameFontSize + 'px ' + FONT;
-				var rateFont = rateFontSize + 'px ' + FONT;
-				ctx.font = nameFont;
-				var tw = ctx.measureText(d.short).width;
+	/** 绘制名称(支持换行) + 涨幅 — T1/T2 档共用 */
+	function drawLabel(ctx, d, cx, cy, rw, rh, nameFontSize, maxW, rateFontSize, rateText, gap, FONT) {
+		var nameFont = 'bold ' + nameFontSize + 'px ' + FONT;
+		var rateFont = rateFontSize + 'px ' + FONT;
+		ctx.font = nameFont;
+		var tw = ctx.measureText(d.short).width;
 
-				if (tw <= maxW) {
-					// 单行放得下
-					ctx.font = nameFont;
-					ctx.fillText(d.short, cx, cy - gap);
-					ctx.font = rateFont;
-					ctx.fillText(rateText, cx, cy + gap);
-				} else if (d.short.length >= 4 && rh > 40) {
-					// 放不下且名称≥4字: 拆成两行
-					var half = Math.ceil(d.short.length / 2);
-					var line1 = d.short.substring(0, half);
-					var line2 = d.short.substring(half);
-					var lineH = nameFontSize + 1;
-					ctx.font = nameFont;
-					ctx.fillText(line1, cx, cy - lineH - 1);
-					ctx.fillText(line2, cx, cy - 1);
-					ctx.font = rateFont;
-					ctx.fillText(rateText, cx, cy + lineH);
-				} else {
-					// 截短到放得下
-					var label = d.short;
-					for (var n = d.short.length - 1; n >= 2; n--) {
-						label = d.short.substring(0, n);
-						if (ctx.measureText(label).width <= maxW) break;
-					}
-					ctx.font = nameFont;
-					ctx.fillText(label, cx, cy - gap);
-					ctx.font = rateFont;
-					ctx.fillText(rateText, cx, cy + gap);
-				}
+		if (tw <= maxW) {
+			ctx.font = nameFont;
+			ctx.fillText(d.short, cx, cy - gap);
+			ctx.font = rateFont;
+			ctx.fillText(rateText, cx, cy + gap);
+		} else if (d.short.length >= 4 && rh > 40) {
+			var half = Math.ceil(d.short.length / 2);
+			var line1 = d.short.substring(0, half);
+			var line2 = d.short.substring(half);
+			var lineH = nameFontSize + 1;
+			ctx.font = nameFont;
+			ctx.fillText(line1, cx, cy - lineH - 1);
+			ctx.fillText(line2, cx, cy - 1);
+			ctx.font = rateFont;
+			ctx.fillText(rateText, cx, cy + lineH);
+		} else {
+			var label = d.short;
+			for (var n = d.short.length - 1; n >= 2; n--) {
+				label = d.short.substring(0, n);
+				if (ctx.measureText(label).width <= maxW) break;
 			}
-			// 更小的格子纯色块
+			ctx.font = nameFont;
+			ctx.fillText(label, cx, cy - gap);
+			ctx.font = rateFont;
+			ctx.fillText(rateText, cx, cy + gap);
 		}
 	}
 
@@ -456,7 +454,6 @@
 		});
 
 		$('#heatmap-level-toggle').on('click', function() {
-			// 切换一级/二级
 			if (levelMode === 'hy') {
 				levelMode = 'hy2';
 				$(this).text('切换一级');
@@ -466,9 +463,7 @@
 				$(this).text('切换二级');
 				$('#heatmap-level-label').text('申万一级(31)');
 			}
-			// 调整 popup 尺寸
 			layoutAndResize();
-			// 清空旧数据，立即刷新
 			sectorData = [];
 			$('#heatmap-loading').show();
 			stopAutoRefresh();
@@ -477,29 +472,20 @@
 	}
 
 	/* ========== 数据请求 ========== */
-
-	/**
-	 * 分页拉取全部行业数据
-	 * 一级(31个): 通常1-2页
-	 * 二级(124个): 需要7页(每页20)
-	 */
 	function fetchSectorData(callback) {
-		var pageSize = 50;   // 尝试一次拉50条，减少请求次数
+		var pageSize = 50;
 		var ts = +new Date();
 
-		// 第一页
 		var url1 = API_URL + '?board_type=' + levelMode +
 			'&sort_type=price&direct=down&offset=0&count=' + pageSize + '&_t=' + ts;
 
 		doFetch(url1, function(list1, total) {
 			if (!total || list1.length >= total) {
-				// 一次拿全了
 				console.log('[Heatmap] ' + levelMode + ': fetched ' + list1.length + '/' + total);
 				callback(list1);
 				return;
 			}
 
-			// 需要更多页
 			console.log('[Heatmap] ' + levelMode + ': page1 got ' + list1.length + '/' + total + ', fetching remaining...');
 			var allData = list1.slice();
 			var remaining = total - list1.length;
@@ -515,12 +501,10 @@
 						pageResults.push({ offset: offset, list: list });
 						completed++;
 						if (completed === pages) {
-							// 所有页完成，按 offset 排序合并
 							pageResults.sort(function(a, b) { return a.offset - b.offset; });
 							for (var j = 0; j < pageResults.length; j++) {
 								allData = allData.concat(pageResults[j].list);
 							}
-							// 去重
 							var codeSet = {};
 							var merged = [];
 							for (var k = 0; k < allData.length; k++) {
@@ -610,7 +594,6 @@
 		deactivate: function() {
 			isActive = false;
 			stopAutoRefresh();
-			// 切回其他 tab 时恢复默认宽度
 			document.body.style.width = '620px';
 			$('#heatmap-container').css('height', '380px');
 		}
